@@ -1,0 +1,44 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Customers</title>
+</head>
+<body>
+    <h1>Customer Management</h1>
+
+    {% with messages = get_flashed_messages() %}
+      {% for message in messages %}
+        <p>{{ message }}</p>
+      {% endfor %}
+    {% endwith %}
+
+    <form method="POST">
+        <label>Customer Name</label>
+        <input type="text" name="name" required>
+
+        <label>Email</label>
+        <input type="email" name="email" required>
+
+        <label>Company</label>
+        <input type="text" name="company">
+
+        <button type="submit">Add Customer</button>
+    </form>
+
+    <h2>Customer List</h2>
+    <ul>
+      {% for customer in customers %}
+        <li>
+          {{ customer.name }} — {{ customer.email }}
+          {% if customer.company %} ({{ customer.company }}){% endif %}
+        </li>
+      {% else %}
+        <li>No customers added yet.</li>
+      {% endfor %}
+    </ul>
+<p><a href="/">Home</a></p>
+</body>
+</html>

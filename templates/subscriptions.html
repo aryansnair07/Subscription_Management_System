@@ -1,0 +1,169 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscription Management</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0; font-family: Arial, sans-serif;
+            background: #f4f7fb; color: #172033;
+        }
+        .topbar { background: #172554; color: white; padding: 22px 6%; }
+        .topbar h1 { margin: 10px 0 6px; font-size: 26px; }
+        .topbar p { margin: 0; color: #cbd5e1; }
+        .back { color: white; text-decoration: none; font-size: 14px; }
+        .container { max-width: 1150px; margin: 30px auto; padding: 0 20px; }
+        .heading { margin-bottom: 22px; }
+        .heading h2 { margin: 0 0 6px; }
+        .muted { color: #64748b; font-size: 14px; }
+        .card {
+            background: white; border: 1px solid #e2e8f0;
+            border-radius: 14px; padding: 24px; margin-bottom: 24px;
+            box-shadow: 0 4px 15px #0f172a08;
+        }
+        .card h3 { margin: 0 0 20px; }
+        .form-grid {
+            display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+        }
+        .field { display: flex; flex-direction: column; gap: 8px; }
+        label { font-size: 14px; font-weight: 600; }
+        input, select {
+            width: 100%; padding: 12px; border: 1px solid #cbd5e1;
+            border-radius: 8px; background: white; font: inherit;
+            color: #172033;
+        }
+        input:focus, select:focus {
+            outline: 2px solid #bfdbfe; border-color: #2563eb;
+        }
+        .btn {
+            display: inline-block; padding: 12px 18px; border: 0;
+            border-radius: 8px; cursor: pointer; font-size: 14px;
+            font-weight: 600;
+        }
+        .primary { background: #2563eb; color: white; }
+        .primary:hover { background: #1d4ed8; }
+        .table-wrap { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; min-width: 700px; }
+        th, td {
+            padding: 14px 12px; text-align: left;
+            border-bottom: 1px solid #e2e8f0; font-size: 14px;
+        }
+        th {
+            background: #f8fafc; color: #475569;
+            font-size: 12px; text-transform: uppercase;
+        }
+        .status {
+            display: inline-block; padding: 5px 10px;
+            border-radius: 20px; background: #dcfce7;
+            color: #166534; font-size: 12px; font-weight: 600;
+        }
+        .empty { text-align: center; padding: 30px; color: #64748b; }
+        @media (max-width: 650px) {
+            .form-grid { grid-template-columns: 1fr; }
+            .card { padding: 18px; }
+        }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <a class="back" href="/">← Back to Dashboard</a>
+        <h1>Subscription Management</h1>
+        <p>Create subscriptions and track customer plans.</p>
+    </header>
+
+    <main class="container">
+        <div class="heading">
+            <h2>Subscriptions</h2>
+            <div class="muted">Manage subscription details in one place.</div>
+        </div>
+
+        <section class="card">
+            <h3>＋ Create New Subscription</h3>
+            <form method="POST" action="{{ url_for('subscriptions.manage_subscriptions') }}">
+                <div class="form-grid">
+                    <div class="field">
+                        <label for="customer_id">Customer *</label>
+                        <select name="customer_id" id="customer_id" required>
+                            <option value="">Select customer</option>
+                            {% for customer in customers %}
+                            <option value="{{ customer['id'] }}">
+                                {{ customer['company_name'] }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label for="plan_id">Subscription Plan *</label>
+                        <select name="plan_id" id="plan_id" required>
+                            <option value="">Select plan</option>
+                            {% for plan in plans %}
+                            <option value="{{ plan['id'] }}">
+                                {{ plan['name'] }} — {{ plan['price'] }} / {{ plan['frequency'] }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label for="start_date">Start Date *</label>
+                        <input type="date" name="start_date" id="start_date" required>
+                    </div>
+
+                    <div class="field">
+                        <label for="expiry_date">Expiry Date</label>
+                        <input type="date" name="expiry_date" id="expiry_date">
+                    </div>
+
+                    <div class="field">
+                        <label for="quantity">Quantity *</label>
+                        <input type="number" name="quantity" id="quantity"
+                               min="1" value="1" required>
+                    </div>
+                </div>
+                <p style="margin-bottom:0; margin-top:20px;">
+                    <button type="submit" class="btn primary">Create Subscription</button>
+                </p>
+            </form>
+        </section>
+
+        <section class="card">
+            <h3>Subscription Records</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Subscription No.</th>
+                            <th>Customer</th>
+                            <th>Plan</th>
+                            <th>Start Date</th>
+                            <th>Expiry Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for subscription in subscriptions %}
+                        <tr>
+                            <td>{{ subscription['subscription_number'] }}</td>
+                            <td>{{ subscription['company_name'] }}</td>
+                            <td>{{ subscription['plan_name'] }}</td>
+                            <td>{{ subscription['start_date'] }}</td>
+                            <td>{{ subscription['expiry_date'] or '—' }}</td>
+                            <td><span class="status">{{ subscription['status'] }}</span></td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="6" class="empty">No subscriptions yet. Create your first subscription above.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

@@ -1,0 +1,176 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quotation Management</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            color: #172033;
+        }
+        .topbar {
+            background: #172554;
+            color: white;
+            padding: 22px 6%;
+        }
+        .topbar h1 { margin: 0 0 6px; font-size: 26px; }
+        .topbar p { margin: 0; color: #cbd5e1; }
+        .container { max-width: 1150px; margin: 30px auto; padding: 0 20px; }
+        .heading {
+            display: flex; justify-content: space-between;
+            align-items: center; gap: 12px; flex-wrap: wrap;
+            margin-bottom: 22px;
+        }
+        .heading h2 { margin: 0 0 6px; }
+        .muted { color: #64748b; font-size: 14px; }
+        .card {
+            background: white; border-radius: 14px; padding: 24px;
+            margin-bottom: 24px; border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 15px #0f172a08;
+        }
+        .card h3 { margin-top: 0; margin-bottom: 20px; }
+        .form-grid {
+            display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+        }
+        .field { display: flex; flex-direction: column; gap: 8px; }
+        .field.full { grid-column: 1 / -1; }
+        label { font-size: 14px; font-weight: 600; }
+        input, select, textarea {
+            width: 100%; padding: 12px;
+            border: 1px solid #cbd5e1; border-radius: 8px;
+            background: white; font: inherit; color: #172033;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: 2px solid #bfdbfe; border-color: #2563eb;
+        }
+        textarea { min-height: 90px; resize: vertical; }
+        .btn {
+            display: inline-block; padding: 12px 18px;
+            border: 0; border-radius: 8px; cursor: pointer;
+            font-size: 14px; font-weight: 600; text-decoration: none;
+        }
+        .primary { background: #2563eb; color: white; }
+        .primary:hover { background: #1d4ed8; }
+        .secondary { background: #e2e8f0; color: #172033; }
+        .table-wrap { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; min-width: 650px; }
+        th, td {
+            padding: 14px 12px; text-align: left;
+            border-bottom: 1px solid #e2e8f0; font-size: 14px;
+        }
+        th { background: #f8fafc; color: #475569; font-size: 12px; text-transform: uppercase; }
+        .status {
+            display: inline-block; padding: 5px 10px;
+            border-radius: 20px; background: #e0e7ff;
+            color: #3730a3; font-size: 12px; font-weight: 600;
+        }
+        .empty { text-align: center; padding: 30px; color: #64748b; }
+        .back { color: white; text-decoration: none; font-size: 14px; }
+        @media (max-width: 650px) {
+            .form-grid { grid-template-columns: 1fr; }
+            .field.full { grid-column: auto; }
+            .card { padding: 18px; }
+        }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <a class="back" href="/">← Back to Dashboard</a>
+        <h1>Quotation Management</h1>
+        <p>Create quotations and manage customer offers.</p>
+    </header>
+
+    <main class="container">
+        <div class="heading">
+            <div>
+                <h2>Quotations</h2>
+                <div class="muted">Create and track your customer quotations.</div>
+            </div>
+        </div>
+
+        <section class="card">
+            <h3>＋ Create New Quotation</h3>
+            <form method="POST" action="{{ url_for('subscriptions.manage_quotations') }}">
+                <div class="form-grid">
+                    <div class="field">
+                        <label for="customer_id">Customer *</label>
+                        <select name="customer_id" id="customer_id" required>
+                            <option value="">Select customer</option>
+                            {% for customer in customers %}
+                            <option value="{{ customer['id'] }}">
+                                {{ customer['company_name'] }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label for="plan_id">Subscription Plan *</label>
+                        <select name="plan_id" id="plan_id" required>
+                            <option value="">Select plan</option>
+                            {% for plan in plans %}
+                            <option value="{{ plan['id'] }}">
+                                {{ plan['name'] }} — {{ plan['price'] }} / {{ plan['frequency'] }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label for="quantity">Quantity *</label>
+                        <input type="number" id="quantity" name="quantity"
+                               min="1" value="1" required>
+                    </div>
+
+                    <div class="field full">
+                        <label for="notes">Notes</label>
+                        <textarea id="notes" name="notes"
+                                  placeholder="Add quotation details or special conditions..."></textarea>
+                    </div>
+                </div>
+                <p style="margin-bottom:0; margin-top:20px;">
+                    <button class="btn primary" type="submit">Create Quotation</button>
+                </p>
+            </form>
+        </section>
+
+        <section class="card">
+            <h3>Quotation Records</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Quotation No.</th>
+                            <th>Customer</th>
+                            <th>Date</th>
+                            <th>Total Amount</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for quotation in quotations %}
+                        <tr>
+                            <td>{{ quotation['quotation_number'] }}</td>
+                            <td>{{ quotation['company_name'] }}</td>
+                            <td>{{ quotation['quotation_date'] }}</td>
+                            <td>{{ "%.2f"|format(quotation['total_amount'] or 0) }}</td>
+                            <td><span class="status">{{ quotation['status'] }}</span></td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5" class="empty">No quotations yet. Create your first quotation above.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

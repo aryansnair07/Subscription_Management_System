@@ -1,0 +1,86 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Subscription Management System</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f3f6fb;
+            color: #1e293b;
+        }
+        header {
+            background: #172554;
+            color: white;
+            padding: 28px 7%;
+        }
+        header h1 { margin: 0 0 8px; }
+        header p { margin: 0; color: #dbeafe; }
+        main { max-width: 1100px; margin: 35px auto; padding: 0 20px; }
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 22px;
+        }
+        .card {
+            display: block;
+            padding: 26px;
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            text-decoration: none;
+            color: #1e293b;
+            box-shadow: 0 4px 12px #0f172a0d;
+        }
+        .card:hover {
+            transform: translateY(-3px);
+            border-color: #3b82f6;
+        }
+        .icon { font-size: 32px; }
+        .card h2 { margin-bottom: 10px; color: #1d4ed8; }
+        .card p { line-height: 1.5; color: #64748b; }
+        .action { color: #2563eb; font-weight: bold; }
+        footer { text-align: center; padding: 25px; color: #64748b; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Subscription Management System</h1>
+        <p>Manage customers, quotations and subscriptions in one place.</p>
+    </header>
+
+    <main>
+        <h2>Dashboard</h2>
+        <p>Select a section to get started.</p>
+
+        <div class="cards">
+            <a class="card" href="{{ url_for('subscriptions.manage_customers') }}">
+                <div class="icon">👥</div>
+                <h2>Customers</h2>
+                <p>Add customers and manage their contact information.</p>
+                <span class="action">Manage Customers →</span>
+            </a>
+
+            <a class="card" href="{{ url_for('subscriptions.manage_quotations') }}">
+                <div class="icon">📄</div>
+                <h2>Quotations</h2>
+                <p>Create quotations for customers and review saved quotations.</p>
+                <span class="action">Manage Quotations →</span>
+            </a>
+
+            <a class="card" href="{{ url_for('subscriptions.manage_subscriptions') }}">
+                <div class="icon">🔄</div>
+                <h2>Subscriptions</h2>
+                <p>Create subscriptions and view their current status.</p>
+                <span class="action">Manage Subscriptions →</span>
+            </a>
+        </div>
+    </main>
+
+    <footer>Subscription Management System</footer>
+</body>
+</html>
