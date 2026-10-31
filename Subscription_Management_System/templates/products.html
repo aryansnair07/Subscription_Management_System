@@ -1,0 +1,5 @@
+{% extends "base.html" %}{% block content %}<h2>Products</h2><div class="row g-4"><div class="col-lg-4"><div class="card"><div class="card-body"><h5>Add product</h5><form method="post">
+<label class="form-label">Name</label><input name="name" class="form-control mb-2" required><label class="form-label">Description</label><textarea name="description" class="form-control mb-2"></textarea>
+<label class="form-label">Sales price (₹)</label><input name="sales_price" type="number" step="0.01" min="0" class="form-control mb-2" required>
+<label class="form-label">Cost price (₹)</label><input name="cost_price" type="number" step="0.01" min="0" class="form-control mb-3"><button class="btn btn-primary">Save product</button></form></div></div></div>
+<div class="col-lg-8"><div class="card"><div class="card-body"><h5>Product catalogue</h5><table class="table"><tr><th>Name</th><th>Sales price</th><th>Cost</th></tr>{% for p in products %}<tr><td>{{ p.name }}</td><td>₹{{ '%.2f'|format(p.sales_price) }}</td><td>₹{{ '%.2f'|format(p.cost_price) }}</td></tr>{% else %}<tr><td colspan="3">No products yet.</td></tr>{% endfor %}</table></div></div></div></div>{% endblock %}

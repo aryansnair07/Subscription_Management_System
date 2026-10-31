@@ -1,0 +1,7 @@
+{% extends "base.html" %}{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4"><div><h2 class="mb-1">Overview</h2><div class="text-muted">Subscription business at a glance</div></div><span class="badge text-bg-success">System operational</span></div>
+<div class="row g-3 mb-4">
+{% for label,value in [('Customers',stats.customers),('Products',stats.products),('Active subscriptions',stats.active),('Invoices',stats.invoices),('Collected revenue','₹%.2f'|format(stats.revenue)),('Outstanding','₹%.2f'|format(stats.outstanding)),('Overdue invoices',stats.overdue)] %}
+<div class="col-6 col-md-4 col-xl"><div class="card metric-card h-100"><div class="card-body"><div class="text-muted small">{{ label }}</div><div class="fs-3 fw-semibold">{{ value }}</div></div></div></div>{% endfor %}</div>
+<div class="card"><div class="card-body"><h5>Recent invoices</h5><div class="table-responsive"><table class="table align-middle"><thead><tr><th>Invoice</th><th>Total</th><th>Status</th><th>Due date</th></tr></thead><tbody>
+{% for i in recent %}<tr><td>{{ i.invoice_number }}</td><td>₹{{ '%.2f'|format(i.total) }}</td><td><span class="badge text-bg-secondary">{{ i.status }}</span></td><td>{{ i.due_date }}</td></tr>{% else %}<tr><td colspan="4" class="text-muted">No invoices yet. Create a subscription and run billing.</td></tr>{% endfor %}</tbody></table></div></div></div>{% endblock %}
